@@ -11,6 +11,7 @@ using System.Web;
 using UsaPresidents.DAL;
 using System.Web.Configuration;
 using UsaPresidents.Helpers;
+using Swashbuckle.Swagger.Annotations;
 
 namespace UsaPresidents.Controllers
 {
@@ -22,6 +23,7 @@ namespace UsaPresidents.Controllers
         /// </summary>
         /// <returns>JSON with a list of all US presidents</returns>
         // GET api/values
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<President>))]
         [Route("api/values/")]
         public HttpResponseMessage Get()
         {
@@ -39,6 +41,8 @@ namespace UsaPresidents.Controllers
         /// <param name="q">mask for filter</param>
         /// <returns>JSON with a list of US presidents that contains mask in their name</returns>
         // GET api/values/q
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<President>))]
         [Route("api/values/{q}")]
         public HttpResponseMessage Get(string q)
         {
@@ -71,6 +75,8 @@ namespace UsaPresidents.Controllers
         /// <returns>List with all US presidents ordered by birth or death dates in ascending or descending order</returns>
 
         // GET api/values/{byBDate}/{isAsc}
+
+        [SwaggerResponse(HttpStatusCode.OK, Type = typeof(List<President>))]
         [Route("api/values/{byBDate}/{isAsc}")]
         public HttpResponseMessage Get(bool byBDate, bool isAsc = true)
         {
