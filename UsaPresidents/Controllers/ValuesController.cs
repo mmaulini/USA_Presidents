@@ -8,55 +8,104 @@ using System.Web.Http;
 using UsaPresidents.Models;
 using CsvHelper;
 using System.Web;
+using UsaPresidents.DAL;
+using System.Web.Configuration;
+using UsaPresidents.Helpers;
 
 namespace UsaPresidents.Controllers
 {
     public class ValuesController : ApiController
     {
 
-        static readonly string address = HttpContext.Current.Server.MapPath("~/App_Data/President.csv");
-
         // GET api/values
-        public List<PresidentSel> Get()
+        public HttpResponseMessage Get()
         {
 
-            string a = HttpContext.Current.Server.MapPath("~/App_Data/President.csv");
-            TextReader reader = File.OpenText(address);
-
-            CsvReader csvFile = new CsvReader(reader);
-            csvFile.Configuration.HasHeaderRecord = false;
-
-            csvFile.Read();
-            var records = csvFile.GetRecords<President>().ToList();
-            List<PresidentSel> rec2 = new List<PresidentSel>();
-
-
-            foreach (var r in records)
-            {
-                rec2.Add(new PresidentSel());
-                PresidentSel r2 = rec2.Last();
-                r2.PresidentName = r.PresidentName;
-                r2.BirdthDate = r.BirdthDate;
-                r2.DeathDate = r.DeathDate;
-
-            }
-
-            //string theResult = "Hello from Hello Api at: \n " + result;
-            return rec2;
+            var dataReader = new ReadCSVData(WebConfigurationManager.AppSettings["CSVPath"]);
+            var president = dataReader.ReadCSV();
+            var rec2 = MapperHelper.CSVMapping(president);
+            return Request.CreateResponse(HttpStatusCode.OK, rec2);
+        
         }
 
 
         // GET api/values/q
-        public string Get(string q)
+        public HttpResponseMessage Get(string q)
         {
-            return "value:" + q;
+            if (q == null)
+            {
+                HttpError err = new HttpError("q should not be empty");
+                return Request.CreateResponse(HttpStatusCode.BadRequest, err);
+            }
+
+            try
+            {
+                var dataReader = new ReadCSVData(WebConfigurationManager.AppSettings["CSVPath"]);
+                var president = dataReader.ReadCSV();
+                var rec2 = MapperHelper.CSVMapping(president);
+                var result = rec2.Where(x => x.PresidentName.ToLower().Contains(q.ToLower())).ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, result);
+            }
+            catch(Exception ex)
+            {
+                HttpError err = new HttpError(ex.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, err);
+            }
         }
 
 
         // GET api/values/5
-        public string Get(int id)
+        public HttpResponseMessage Get(bool byDate, bool isAsc = true)
         {
-            return "value";
+            try
+            {
+                var dataReader = new ReadCSVData(WebConfigurationManager.AppSettings["CSVPath"]);
+                var president = dataReader.ReadCSV();
+                var rec2 = MapperHelper.CSVMapping(president);
+
+                if (byDate)
+                {
+                    if (isAsc)
+                    {
+                        var result = rec2.OrderBy(x => x.BirdthDate).ToList();
+                        return Request.CreateResponse(HttpStatusCode.OK, result);
+                    }
+                    else
+                    {
+                        var result = rec2.OrderByDescending(x => x.BirdthDate).ToList();
+                        return Request.CreateResponse(HttpStatusCode.OK, result);
+                    }
+                }
+                else
+                {
+                    var deathPresidents = rec2.Where(x => x.DeathDate != null).ToList();
+                    var alivePresidents = rec2.Where(x => x.DeathDate == null).ToList();
+                    if (isAsc)
+                    {
+                        var orderedList = deathPresidents.OrderBy(x => x.DeathDate).ToList();
+                        orderedList.AddRange(alivePresidents);
+                      
+                        return Request.CreateResponse(HttpStatusCode.OK, orderedList);
+
+                    }
+                    else
+                    {
+                        var orderedList = deathPresidents.OrderByDescending(x => x.DeathDate).ToList();
+                        orderedList.AddRange(alivePresidents);
+                        return Request.CreateResponse(HttpStatusCode.OK, orderedList);
+
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                HttpError err = new HttpError(ex.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, err);
+            }
+
+
+
         }
 
         // POST api/values

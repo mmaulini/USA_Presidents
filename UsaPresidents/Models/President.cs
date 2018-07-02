@@ -8,9 +8,7 @@ namespace UsaPresidents.Models
     public class President
     {
         public string PresidentName { get; set; }
-        public string BirdthDate { get; set; }
-        public string BirdthPlace { get; set; }
-        public string DeathDate { get; set; }
-        public string DeathPlace { get; set; }
+        public DateTime? BirdthDate { get; set; }
+        public DateTime? DeathDate { get; set; }
     }
 }
