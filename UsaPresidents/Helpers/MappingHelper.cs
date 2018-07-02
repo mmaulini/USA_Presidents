@@ -18,7 +18,7 @@ namespace UsaPresidents.Helpers
                 r2.PresidentName = r.PresidentName;
                 DateTime bd = new DateTime();
                 DateTime dd = new DateTime();
-                if (DateTime.TryParse(r.BirdthDate, out bd)) { r2.BirdthDate = bd; }
+                if (DateTime.TryParse(r.BirthDate, out bd)) { r2.BirthDate = bd; }
                 if (DateTime.TryParse(r.DeathDate, out dd)) { r2.DeathDate = dd; }
 
             }

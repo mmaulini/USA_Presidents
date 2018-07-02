@@ -90,12 +90,12 @@ namespace UsaPresidents.Controllers
                 {
                     if (isAsc)
                     {
-                        var result = rec2.OrderBy(x => x.BirdthDate).ToList();
+                        var result = rec2.OrderBy(x => x.BirthDate).ToList();
                         return Request.CreateResponse(HttpStatusCode.OK, result);
                     }
                     else
                     {
-                        var result = rec2.OrderByDescending(x => x.BirdthDate).ToList();
+                        var result = rec2.OrderByDescending(x => x.BirthDate).ToList();
                         return Request.CreateResponse(HttpStatusCode.OK, result);
                     }
                 }
