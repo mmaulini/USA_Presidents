@@ -196,6 +196,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="DAL\Interfaces\IReadable.cs" />
     <Compile Include="DAL\Models\President.cs" />
     <Compile Include="DAL\ReadCSVData.cs" />
     <Compile Include="Global.asax.cs">

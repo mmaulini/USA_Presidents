@@ -27,7 +27,7 @@ namespace UsaPresidents.Controllers
         {
 
             var dataReader = new ReadCSVData(WebConfigurationManager.AppSettings["CSVPath"]);
-            var president = dataReader.ReadCSV();
+            var president = dataReader.ReadAll();
             var rec2 = MapperHelper.CSVMapping(president);
             return Request.CreateResponse(HttpStatusCode.OK, rec2);
         
@@ -51,7 +51,7 @@ namespace UsaPresidents.Controllers
             try
             {
                 var dataReader = new ReadCSVData(WebConfigurationManager.AppSettings["CSVPath"]);
-                var president = dataReader.ReadCSV();
+                var president = dataReader.ReadAll();
                 var rec2 = MapperHelper.CSVMapping(president);
                 var result = rec2.Where(x => x.PresidentName.ToLower().Contains(q.ToLower())).ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, result);
@@ -77,7 +77,7 @@ namespace UsaPresidents.Controllers
             try
             {
                 var dataReader = new ReadCSVData(WebConfigurationManager.AppSettings["CSVPath"]);
-                var president = dataReader.ReadCSV();
+                var president = dataReader.ReadAll();
                 var rec2 = MapperHelper.CSVMapping(president);
 
                 if (byBDate)
